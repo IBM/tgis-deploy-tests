@@ -1,0 +1,566 @@
+- name: Greedy max new tokens (explicit)
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 5
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 5
+      text: ' there was a little girl'
+      inputTokenCount: 5
+      stopReason: MAX_TOKENS
+- name: Greedy include input tokens
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 4
+      response:
+        inputTokens: true
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 4
+      text: ' there was a little'
+      inputTokenCount: 5
+      stopReason: MAX_TOKENS
+      inputTokens:
+      - text: Once
+      - text: Ġupon
+      - text: Ġa
+      - text: Ġtime
+      - text: ','
+- name: Greedy include input tokens with logprobs
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 4
+      response:
+        inputTokens: true
+        tokenLogprobs: true
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 4
+      text: ' there was a little'
+      inputTokenCount: 5
+      stopReason: MAX_TOKENS
+      inputTokens:
+      - text: Once
+        logprob: NaN
+      - text: Ġupon
+        logprob: -5.8945312
+      - text: Ġa
+        logprob: -0.026016235
+      - text: Ġtime
+        logprob: -0.17749023
+      - text: ','
+        logprob: -0.6142578
+- name: Greedy include generated tokens
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 4
+      response:
+        generatedTokens: true
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 4
+      text: ' there was a little'
+      inputTokenCount: 5
+      stopReason: MAX_TOKENS
+      tokens:
+      - text: Ġthere
+      - text: Ġwas
+      - text: Ġa
+      - text: Ġlittle
+- name: Greedy include generated tokens with logprobs
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 4
+      response:
+        generatedTokens: true
+        tokenLogprobs: true
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 4
+      text: ' there was a little'
+      inputTokenCount: 5
+      stopReason: MAX_TOKENS
+      tokens:
+      - text: Ġthere
+        logprob: -1.5546875
+      - text: Ġwas
+        logprob: -0.2783203
+      - text: Ġa
+        logprob: -0.16577148
+      - text: Ġlittle
+        logprob: -2.4628906
+- name: Greedy multiple inputs
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 8
+    requests:
+    - text: Once upon a time,
+    - text: One plus one is
+    - text: Somewhere,\nover the rainbow,\nthere is
+  response:
+    responses:
+    - generatedTokenCount: 8
+      text: ' there was a little girl who was very'
+      inputTokenCount: 5
+      stopReason: MAX_TOKENS
+    - generatedTokenCount: 8
+      text: ' two." "One plus one is two'
+      inputTokenCount: 4
+      stopReason: MAX_TOKENS
+    - generatedTokenCount: 8
+      text: ' a place\nwhere the rain\'
+      inputTokenCount: 11
+      stopReason: MAX_TOKENS
+- name: Greedy multiple inputs include generated tokens, logprobs, and top_n
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 8
+      response:
+        generatedTokens: true
+        tokenLogprobs: true
+        topNTokens: 2
+    requests:
+    - text: Once upon a time,
+    - text: One plus one is
+    - text: Somewhere,\nover the rainbow,\nthere is
+  response:
+    responses:
+    - generatedTokenCount: 8
+      text: ' there was a little girl who was very'
+      inputTokenCount: 5
+      stopReason: MAX_TOKENS
+      tokens:
+      - text: Ġthere
+        logprob: -1.5449219
+        topTokens:
+        - text: Ġthere
+          logprob: -1.5449219
+        - text: Ġa
+          logprob: -2.3574219
+      - text: Ġwas
+        logprob: -0.27783203
+        topTokens:
+        - text: Ġwas
+          logprob: -0.27783203
+        - text: Ġwere
+          logprob: -2.2148438
+        - text: Ġlived
+          logprob: -2.2148438
+      - text: Ġa
+        logprob: -0.16479492
+        topTokens:
+        - text: Ġa
+          logprob: -0.16479492
+        - text: Ġan
+          logprob: -2.7890625
+      - text: Ġlittle
+        logprob: -2.4667969
+        topTokens:
+        - text: Ġlittle
+          logprob: -2.4667969
+        - text: Ġman
+          logprob: -2.9042969
+        - text: Ġgirl
+          logprob: -2.9042969
+      - text: Ġgirl
+        logprob: -0.9145508
+        topTokens:
+        - text: Ġgirl
+          logprob: -0.9145508
+        - text: Ġboy
+          logprob: -1.7900391
+      - text: Ġwho
+        logprob: -1.0878906
+        topTokens:
+        - text: Ġwho
+          logprob: -1.0878906
+        - text: Ġnamed
+          logprob: -1.5878906
+      - text: Ġwas
+        logprob: -1.7734375
+        topTokens:
+        - text: Ġwas
+          logprob: -1.7734375
+        - text: Ġhad
+          logprob: -2.0859375
+      - text: Ġvery
+        logprob: -2.4804688
+        topTokens:
+        - text: Ġvery
+          logprob: -2.4804688
+        - text: Ġa
+          logprob: -2.8554688
+    - generatedTokenCount: 8
+      text: ' two." "One plus one is two'
+      inputTokenCount: 4
+      stopReason: MAX_TOKENS
+      tokens:
+      - text: Ġtwo
+        logprob: -0.91064453
+        topTokens:
+        - text: Ġtwo
+          logprob: -0.91064453
+        - text: Ġone
+          logprob: -2.2226562
+      - text: ."
+        logprob: -1.6044922
+        topTokens:
+        - text: ."
+          logprob: -1.6044922
+        - text: ','
+          logprob: -1.8544922
+      - text: Ġ"
+        logprob: -0.3840332
+        topTokens:
+        - text: Ġ"
+          logprob: -0.3840332
+        - text: Ċ
+          logprob: -1.9462891
+      - text: One
+        logprob: -2.5097656
+        topTokens:
+        - text: One
+          logprob: -2.5097656
+        - text: Two
+          logprob: -2.5097656
+      - text: Ġplus
+        logprob: -0.18347168
+        topTokens:
+        - text: Ġplus
+          logprob: -0.18347168
+        - text: Ġis
+          logprob: -3.7460938
+      - text: Ġone
+        logprob: -0.27734375
+        topTokens:
+        - text: Ġone
+          logprob: -0.27734375
+        - text: Ġtwo
+          logprob: -1.5273438
+      - text: Ġis
+        logprob: -0.16589355
+        topTokens:
+        - text: Ġis
+          logprob: -0.16589355
+        - text: Ġequals
+          logprob: -2.9160156
+      - text: Ġtwo
+        logprob: -0.6010742
+        topTokens:
+        - text: Ġtwo
+          logprob: -0.6010742
+        - text: Ġone
+          logprob: -1.7265625
+    - generatedTokenCount: 8
+      text: ' a place\nwhere the rain\'
+      inputTokenCount: 11
+      stopReason: MAX_TOKENS
+      tokens:
+      - text: Ġa
+        logprob: -0.5527344
+        topTokens:
+        - text: Ġa
+          logprob: -0.5527344
+        - text: Ġan
+          logprob: -2.6777344
+      - text: Ġplace
+        logprob: -0.8803711
+        topTokens:
+        - text: Ġplace
+          logprob: -0.8803711
+        - text: Ġland
+          logprob: -2.0058594
+      - text: \
+        logprob: -0.6196289
+        topTokens:
+        - text: \
+          logprob: -0.6196289
+        - text: Ġfor
+          logprob: -1.8691406
+      - text: n
+        logprob: -0.23962402
+        topTokens:
+        - text: n
+          logprob: -0.23962402
+        - text: nd
+          logprob: -3.7402344
+      - text: where
+        logprob: -1.4667969
+        topTokens:
+        - text: where
+          logprob: -1.4667969
+        - text: \
+          logprob: -1.6542969
+      - text: Ġthe
+        logprob: -2.0
+        topTokens:
+        - text: Ġthe
+          logprob: -2.0
+        - text: Ġtroubles
+          logprob: -2.1875
+      - text: Ġrain
+        logprob: -1.4042969
+        topTokens:
+        - text: Ġrain
+          logprob: -1.4042969
+        - text: Ġtroubles
+          logprob: -2.3730469
+      - text: \
+        logprob: -0.9111328
+        topTokens:
+        - text: \
+          logprob: -0.9111328
+        - text: bows
+          logprob: -1.3798828
+- name: Sample include generated tokens with logprobs, top_k=1
+  request:
+    params:
+      method: SAMPLE
+      sampling:
+        seed: 99
+        top_k: 1
+      stopping:
+        maxNewTokens: 4
+      response:
+        generatedTokens: true
+        tokenLogprobs: true
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 4
+      text: ' there was a little'
+      inputTokenCount: 5
+      stopReason: MAX_TOKENS
+      tokens:
+      - text: Ġthere
+      - text: Ġwas
+      - text: Ġa
+      - text: Ġlittle
+      seed: 99
+- name: Sample include input tokens and generated tokens with ranks and top_n, top_k
+    < top_n
+  request:
+    params:
+      method: SAMPLE
+      sampling:
+        seed: 99
+        top_k: 1
+      stopping:
+        maxNewTokens: 4
+      response:
+        inputTokens: true
+        generatedTokens: true
+        tokenLogprobs: true
+        tokenRanks: true
+        topNTokens: 2
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 4
+      text: ' there was a little'
+      inputTokenCount: 5
+      stopReason: MAX_TOKENS
+      tokens:
+      - text: Ġthere
+        rank: 1
+        topTokens:
+        - text: Ġthere
+      - text: Ġwas
+        rank: 1
+        topTokens:
+        - text: Ġwas
+      - text: Ġa
+        rank: 1
+        topTokens:
+        - text: Ġa
+      - text: Ġlittle
+        rank: 1
+        topTokens:
+        - text: Ġlittle
+      inputTokens:
+      - text: Once
+        logprob: NaN
+      - text: Ġupon
+        logprob: -5.8945312
+        rank: 25
+        topTokens:
+        - text: Ġthe
+          logprob: -1.5185547
+        - text: Ġyou
+          logprob: -1.5810547
+      - text: Ġa
+        logprob: -0.026016235
+        rank: 1
+        topTokens:
+        - text: Ġa
+          logprob: -0.026016235
+        - text: Ġthe
+          logprob: -5.2148438
+      - text: Ġtime
+        logprob: -0.17749023
+        rank: 1
+        topTokens:
+        - text: Ġtime
+          logprob: -0.17749023
+        - text: Ġmidnight
+          logprob: -2.4902344
+      - text: ','
+        logprob: -0.6142578
+        rank: 1
+        topTokens:
+        - text: ','
+          logprob: -0.6142578
+        - text: Ġthere
+          logprob: -1.9892578
+      seed: 99
+- name: Sample top_p = 0.000000001
+  request:
+    params:
+      method: SAMPLE
+      sampling:
+        seed: 99
+        top_p: 0.000000001
+      stopping:
+        maxNewTokens: 6
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 6
+      text: ' there was a little girl who'
+      inputTokenCount: 5
+      stopReason: MAX_TOKENS
+      seed: 99
+- name: Sample top_k = 10, no seed
+  skip_check: true
+  request:
+    params:
+      method: SAMPLE
+      sampling:
+        top_k: 10
+      stopping:
+        maxNewTokens: 6
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 6
+      text: ' there was a girl named Alice'
+      inputTokenCount: 5
+      stopReason: MAX_TOKENS
+      seed: 866797777
+- name: Sample top_p = 0.95, temp = 0.1, top_k = 15, minimum == maximum, no seed
+  skip_check: true
+  request:
+    params:
+      method: SAMPLE
+      sampling:
+        top_p: 0.95
+        temperature: 0.1
+        top_k: 15
+      stopping:
+        minNewTokens: 15
+        maxNewTokens: 15
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 15
+      text: ' there was a little girl who was very, very good. She was so'
+      inputTokenCount: 5
+      stopReason: MAX_TOKENS
+      seed: 828924563
+- name: Include input text
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 4
+      response:
+        inputText: true
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 4
+      text: Once upon a time, there was a little
+      inputTokenCount: 5
+      stopReason: MAX_TOKENS
+- name: Stop sequence 1 token
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 5
+        stopSequences:
+        - a
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 2
+      text: ' there wa'
+      inputTokenCount: 5
+      stopReason: STOP_SEQUENCE
+      stopSequence: a
+- name: Repetition penalty
+  request:
+    params:
+      method: GREEDY
+      decoding:
+        repetition_penalty: 2.5
+      stopping:
+        maxNewTokens: 5
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 5
+      text: ' there was an old man'
+      inputTokenCount: 5
+      stopReason: MAX_TOKENS
+- name: Length penalty
+  request:
+    params:
+      method: GREEDY
+      decoding:
+        repetition_penalty: 2.5
+        length_penalty:
+          start_index: 8
+          decay_factor: 1.01
+      stopping:
+        maxNewTokens: 5
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 5
+      text: ' there was an old man'
+      inputTokenCount: 5
+      stopReason: MAX_TOKENS

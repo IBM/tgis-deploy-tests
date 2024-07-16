@@ -1,0 +1,506 @@
+- name: Greedy max new tokens (explicit)
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 5
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 5
+      text: a young girl named
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+- name: Greedy include input tokens
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 4
+      response:
+        inputTokens: true
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 4
+      text: a young girl
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+      inputTokens:
+      - text: ▁Once
+      - text: ▁upon
+      - text: ▁
+      - text: a
+      - text: ▁time
+      - text: ','
+      - text: </s>
+- name: Greedy include input tokens with logprobs
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 4
+      response:
+        inputTokens: true
+        tokenLogprobs: true
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 4
+      text: a young girl
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+      inputTokens:
+      - text: ▁Once
+        logprob: NaN
+      - text: ▁upon
+        logprob: NaN
+      - text: ▁
+        logprob: NaN
+      - text: a
+        logprob: NaN
+      - text: ▁time
+        logprob: NaN
+      - text: ','
+        logprob: NaN
+      - text: </s>
+        logprob: NaN
+- name: Greedy include generated tokens
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 4
+      response:
+        generatedTokens: true
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 4
+      text: a young girl
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+      tokens:
+      - text: ▁
+      - text: a
+      - text: ▁young
+      - text: ▁girl
+- name: Greedy include generated tokens with logprobs
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 4
+      response:
+        generatedTokens: true
+        tokenLogprobs: true
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 4
+      text: a young girl
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+      tokens:
+      - text: ▁
+        logprob: -2.2871094
+      - text: a
+        logprob: -0.09484863
+      - text: ▁young
+        logprob: -2.6796875
+      - text: ▁girl
+        logprob: -1.6298828
+- name: Greedy multiple inputs
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 8
+    requests:
+    - text: Once upon a time,
+    - text: One plus one is
+    - text: Somewhere,\nover the rainbow,\nthere is
+  response:
+    responses:
+    - generatedTokenCount: 8
+      text: 'a young girl named Anna was '
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+    - generatedTokenCount: 2
+      text: '2'
+      inputTokenCount: 5
+      stopReason: EOS_TOKEN
+    - generatedTokenCount: 8
+      text: a land ofnpeace
+      inputTokenCount: 14
+      stopReason: MAX_TOKENS
+- name: Greedy multiple inputs include generated tokens, logprobs, and top_n
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 8
+      response:
+        generatedTokens: true
+        tokenLogprobs: true
+        topNTokens: 2
+    requests:
+    - text: Once upon a time,
+    - text: One plus one is
+    - text: Somewhere,\nover the rainbow,\nthere is
+  response:
+    responses:
+    - generatedTokenCount: 8
+      text: 'a young girl named Anna was '
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+      tokens:
+      - text: ▁
+        logprob: -2.2890625
+        topTokens:
+        - text: ▁
+          logprob: -2.2890625
+        - text: ▁I
+          logprob: -2.5722656
+      - text: a
+        logprob: -0.0949707
+        topTokens:
+        - text: a
+          logprob: -0.0949707
+        - text: if
+          logprob: -4.6171875
+      - text: ▁young
+        logprob: -2.6796875
+        topTokens:
+        - text: ▁young
+          logprob: -2.6796875
+        - text: ▁
+          logprob: -2.8789062
+      - text: ▁girl
+        logprob: -1.6298828
+        topTokens:
+        - text: ▁girl
+          logprob: -1.6298828
+        - text: ▁boy
+          logprob: -1.9150391
+      - text: ▁named
+        logprob: -1.8330078
+        topTokens:
+        - text: ▁named
+          logprob: -1.8330078
+        - text: ▁was
+          logprob: -2.2421875
+      - text: ▁Anna
+        logprob: -3.78125
+        topTokens:
+        - text: ▁Anna
+          logprob: -3.78125
+        - text: ▁Mary
+          logprob: -4.0195312
+      - text: ▁was
+        logprob: -2.0136719
+        topTokens:
+        - text: ▁was
+          logprob: -2.0136719
+        - text: ▁lived
+          logprob: -2.4316406
+      - text: ▁
+        logprob: -2.2851562
+        topTokens:
+        - text: ▁
+          logprob: -2.2851562
+        - text: ▁walking
+          logprob: -2.5839844
+    - generatedTokenCount: 2
+      text: '2'
+      inputTokenCount: 5
+      stopReason: EOS_TOKEN
+      tokens:
+      - text: ▁2
+        logprob: -1.2587891
+        topTokens:
+        - text: ▁2
+          logprob: -1.2587891
+        - text: ▁1
+          logprob: -1.3115234
+      - text: </s>
+        logprob: -0.019729614
+        topTokens:
+        - text: </s>
+          logprob: -0.019729614
+        - text: ▁
+          logprob: -5.6132812
+    - generatedTokenCount: 8
+      text: a land ofnpeace
+      inputTokenCount: 14
+      stopReason: MAX_TOKENS
+      tokens:
+      - text: ▁
+        logprob: -0.6455078
+        topTokens:
+        - text: ▁
+          logprob: -0.6455078
+        - text: ▁some
+          logprob: -2.6367188
+      - text: a
+        logprob: -0.025360107
+        topTokens:
+        - text: a
+          logprob: -0.025360107
+        - text: <unk>
+          logprob: -4.1210938
+      - text: ▁land
+        logprob: -1.4755859
+        topTokens:
+        - text: ▁land
+          logprob: -1.4755859
+        - text: ▁pot
+          logprob: -1.8876953
+      - text: ▁of
+        logprob: -1.5996094
+        topTokens:
+        - text: ▁of
+          logprob: -1.5996094
+        - text: <unk>
+          logprob: -1.75
+      - text: <unk>
+        logprob: -1.5957031
+        topTokens:
+        - text: <unk>
+          logprob: -1.5957031
+        - text: ▁milk
+          logprob: -1.7597656
+      - text: n
+        logprob: -0.011672974
+        topTokens:
+        - text: n
+          logprob: -0.011672974
+        - text: nd
+          logprob: -6.421875
+      - text: pe
+        logprob: -1.6230469
+        topTokens:
+        - text: pe
+          logprob: -1.6230469
+        - text: h
+          logprob: -2.6660156
+      - text: ace
+        logprob: -0.71972656
+        topTokens:
+        - text: ace
+          logprob: -0.71972656
+        - text: ar
+          logprob: -0.82714844
+- name: Sample include generated tokens with logprobs, top_k=1
+  request:
+    params:
+      method: SAMPLE
+      sampling:
+        seed: 99
+        top_k: 1
+      stopping:
+        maxNewTokens: 4
+      response:
+        generatedTokens: true
+        tokenLogprobs: true
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 4
+      text: a young girl
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+      tokens:
+      - text: ▁
+      - text: a
+      - text: ▁young
+      - text: ▁girl
+      seed: 99
+- name: Sample include input tokens and generated tokens with ranks and top_n, top_k
+    < top_n
+  request:
+    params:
+      method: SAMPLE
+      sampling:
+        seed: 99
+        top_k: 1
+      stopping:
+        maxNewTokens: 4
+      response:
+        inputTokens: true
+        generatedTokens: true
+        tokenLogprobs: true
+        tokenRanks: true
+        topNTokens: 2
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 4
+      text: a young girl
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+      tokens:
+      - text: ▁
+        rank: 1
+        topTokens:
+        - text: ▁
+      - text: a
+        rank: 1
+        topTokens:
+        - text: a
+      - text: ▁young
+        rank: 1
+        topTokens:
+        - text: ▁young
+      - text: ▁girl
+        rank: 1
+        topTokens:
+        - text: ▁girl
+      inputTokens:
+      - text: ▁Once
+        logprob: NaN
+      - text: ▁upon
+        logprob: NaN
+      - text: ▁
+        logprob: NaN
+      - text: a
+        logprob: NaN
+      - text: ▁time
+        logprob: NaN
+      - text: ','
+        logprob: NaN
+      - text: </s>
+        logprob: NaN
+      seed: 99
+- name: Sample top_p = 0.000000001
+  request:
+    params:
+      method: SAMPLE
+      sampling:
+        seed: 99
+        top_p: 0.000000001
+      stopping:
+        maxNewTokens: 6
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 6
+      text: a young girl named Anna
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+      seed: 99
+- name: Sample top_k = 10, no seed
+  skip_check: true
+  request:
+    params:
+      method: SAMPLE
+      sampling:
+        top_k: 10
+      stopping:
+        maxNewTokens: 6
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 6
+      text: Ariel was a young
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+      seed: 3186684681
+- name: Sample top_p = 0.95, temp = 0.1, top_k = 15, minimum == maximum, no seed
+  skip_check: true
+  request:
+    params:
+      method: SAMPLE
+      sampling:
+        top_p: 0.95
+        temperature: 0.1
+        top_k: 15
+      stopping:
+        minNewTokens: 15
+        maxNewTokens: 15
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 15
+      text: a young girl named Anna was a very good student. She was
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+      seed: 36363893
+- name: Include input text
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 4
+      response:
+        inputText: true
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 4
+      text: "Once upon a time,\n\na young girl"
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+- name: Stop sequence 1 token
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 5
+        stopSequences:
+        - a
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 2
+      text: a
+      inputTokenCount: 7
+      stopReason: STOP_SEQUENCE
+      stopSequence: a
+- name: Repetition penalty
+  request:
+    params:
+      method: GREEDY
+      decoding:
+        repetition_penalty: 2.5
+      stopping:
+        maxNewTokens: 5
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 5
+      text: a young girl named
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+- name: Length penalty
+  request:
+    params:
+      method: GREEDY
+      decoding:
+        repetition_penalty: 2.5
+        length_penalty:
+          start_index: 8
+          decay_factor: 1.01
+      stopping:
+        maxNewTokens: 5
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 5
+      text: a young girl named
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS

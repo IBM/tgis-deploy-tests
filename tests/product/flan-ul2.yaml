@@ -1,0 +1,492 @@
+- name: Greedy max new tokens (explicit)
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 5
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 5
+      text: once upon a time
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+- name: Greedy include input tokens
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 4
+      response:
+        inputTokens: true
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 4
+      text: once upon a
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+      inputTokens:
+      - text: ▁Once
+      - text: ▁upon
+      - text: ▁
+      - text: a
+      - text: ▁time
+      - text: ','
+      - text: </s>
+- name: Greedy include input tokens with logprobs
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 4
+      response:
+        inputTokens: true
+        tokenLogprobs: true
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 4
+      text: once upon a
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+      inputTokens:
+      - text: ▁Once
+        logprob: NaN
+      - text: ▁upon
+        logprob: NaN
+      - text: ▁
+        logprob: NaN
+      - text: a
+        logprob: NaN
+      - text: ▁time
+        logprob: NaN
+      - text: ','
+        logprob: NaN
+      - text: </s>
+        logprob: NaN
+- name: Greedy include generated tokens
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 4
+      response:
+        generatedTokens: true
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 4
+      text: once upon a
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+      tokens:
+      - text: ▁once
+      - text: ▁upon
+      - text: ▁
+      - text: a
+- name: Greedy include generated tokens with logprobs
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 4
+      response:
+        generatedTokens: true
+        tokenLogprobs: true
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 4
+      text: once upon a
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+      tokens:
+      - text: ▁once
+        logprob: -2.3125
+      - text: ▁upon
+        logprob: -0.08331299
+      - text: ▁
+        logprob: -0.0076522827
+      - text: a
+        logprob: -0.00028252602
+- name: Greedy multiple inputs
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 8
+    requests:
+    - text: Once upon a time,
+    - text: One plus one is
+    - text: Somewhere,\nover the rainbow,\nthere is
+  response:
+    responses:
+    - generatedTokenCount: 8
+      text: once upon a time, there was
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+    - generatedTokenCount: 2
+      text: two
+      inputTokenCount: 5
+      stopReason: EOS_TOKEN
+    - generatedTokenCount: 6
+      text: a pot of gold
+      inputTokenCount: 14
+      stopReason: EOS_TOKEN
+- name: Greedy multiple inputs include generated tokens, logprobs, and top_n
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 8
+      response:
+        generatedTokens: true
+        tokenLogprobs: true
+        topNTokens: 2
+    requests:
+    - text: Once upon a time,
+    - text: One plus one is
+    - text: Somewhere,\nover the rainbow,\nthere is
+  response:
+    responses:
+    - generatedTokenCount: 8
+      text: once upon a time, there was
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+      tokens:
+      - text: ▁once
+        logprob: -2.3164062
+        topTokens:
+        - text: ▁once
+          logprob: -2.3164062
+        - text: ▁
+          logprob: -2.5
+      - text: ▁upon
+        logprob: -0.08343506
+        topTokens:
+        - text: ▁upon
+          logprob: -0.08343506
+        - text: ▁there
+          logprob: -4.0117188
+      - text: ▁
+        logprob: -0.0076408386
+        topTokens:
+        - text: ▁
+          logprob: -0.0076408386
+        - text: ▁time
+          logprob: -6.3671875
+      - text: a
+        logprob: -0.0002822876
+        topTokens:
+        - text: a
+          logprob: -0.0002822876
+        - text: '...'
+          logprob: -9.578125
+      - text: ▁time
+        logprob: -0.04675293
+        topTokens:
+        - text: ▁time
+          logprob: -0.04675293
+        - text: ▁
+          logprob: -5.96875
+      - text: ','
+        logprob: -0.32055664
+        topTokens:
+        - text: ','
+          logprob: -0.32055664
+        - text: ▁there
+          logprob: -2.8574219
+      - text: ▁there
+        logprob: -0.94970703
+        topTokens:
+        - text: ▁there
+          logprob: -0.94970703
+        - text: ▁once
+          logprob: -1.5722656
+      - text: ▁was
+        logprob: -0.31347656
+        topTokens:
+        - text: ▁was
+          logprob: -0.31347656
+        - text: ▁lived
+          logprob: -1.8642578
+    - generatedTokenCount: 2
+      text: two
+      inputTokenCount: 5
+      stopReason: EOS_TOKEN
+      tokens:
+      - text: ▁two
+        logprob: -0.95166016
+        topTokens:
+        - text: ▁two
+          logprob: -0.95166016
+        - text: ▁Two
+          logprob: -1.6123047
+      - text: </s>
+        logprob: -0.011512756
+        topTokens:
+        - text: </s>
+          logprob: -0.011512756
+        - text: ▁plus
+          logprob: -6.0234375
+    - generatedTokenCount: 6
+      text: a pot of gold
+      inputTokenCount: 14
+      stopReason: EOS_TOKEN
+      tokens:
+      - text: ▁
+        logprob: -1.3388672
+        topTokens:
+        - text: ▁
+          logprob: -1.3388672
+        - text: ▁some
+          logprob: -1.9052734
+      - text: a
+        logprob: -0.057495117
+        topTokens:
+        - text: a
+          logprob: -0.057495117
+        - text: <unk>
+          logprob: -4.6328125
+      - text: ▁pot
+        logprob: -0.14709473
+        topTokens:
+        - text: ▁pot
+          logprob: -0.14709473
+        - text: ▁place
+          logprob: -3.6796875
+      - text: ▁of
+        logprob: -0.06329346
+        topTokens:
+        - text: ▁of
+          logprob: -0.06329346
+        - text: ▁
+          logprob: -3.2519531
+      - text: ▁gold
+        logprob: -0.0045776367
+        topTokens:
+        - text: ▁gold
+          logprob: -0.0045776367
+        - text: ▁Gold
+          logprob: -6.71875
+      - text: </s>
+        logprob: -0.73291016
+        topTokens:
+        - text: </s>
+          logprob: -0.73291016
+        - text: <unk>
+          logprob: -1.5732422
+- name: Sample include generated tokens with logprobs, top_k=1
+  request:
+    params:
+      method: SAMPLE
+      sampling:
+        seed: 99
+        top_k: 1
+      stopping:
+        maxNewTokens: 4
+      response:
+        generatedTokens: true
+        tokenLogprobs: true
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 4
+      text: once upon a
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+      tokens:
+      - text: ▁once
+      - text: ▁upon
+      - text: ▁
+      - text: a
+      seed: 99
+- name: Sample include input tokens and generated tokens with ranks and top_n, top_k
+    < top_n
+  request:
+    params:
+      method: SAMPLE
+      sampling:
+        seed: 99
+        top_k: 1
+      stopping:
+        maxNewTokens: 4
+      response:
+        inputTokens: true
+        generatedTokens: true
+        tokenLogprobs: true
+        tokenRanks: true
+        topNTokens: 2
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 4
+      text: once upon a
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+      tokens:
+      - text: ▁once
+        rank: 1
+        topTokens:
+        - text: ▁once
+      - text: ▁upon
+        rank: 1
+        topTokens:
+        - text: ▁upon
+      - text: ▁
+        rank: 1
+        topTokens:
+        - text: ▁
+      - text: a
+        rank: 1
+        topTokens:
+        - text: a
+      inputTokens:
+      - text: ▁Once
+        logprob: NaN
+      - text: ▁upon
+        logprob: NaN
+      - text: ▁
+        logprob: NaN
+      - text: a
+        logprob: NaN
+      - text: ▁time
+        logprob: NaN
+      - text: ','
+        logprob: NaN
+      - text: </s>
+        logprob: NaN
+      seed: 99
+- name: Sample top_p = 0.000000001
+  request:
+    params:
+      method: SAMPLE
+      sampling:
+        seed: 99
+        top_p: 0.000000001
+      stopping:
+        maxNewTokens: 6
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 6
+      text: once upon a time,
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+      seed: 99
+- name: Sample top_k = 10, no seed
+  skip_check: true
+  request:
+    params:
+      method: SAMPLE
+      sampling:
+        top_k: 10
+      stopping:
+        maxNewTokens: 6
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 6
+      text: Once upon a time,
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+      seed: 3872222295
+- name: Sample top_p = 0.95, temp = 0.1, top_k = 15, minimum == maximum, no seed
+  skip_check: true
+  request:
+    params:
+      method: SAMPLE
+      sampling:
+        top_p: 0.95
+        temperature: 0.1
+        top_k: 15
+      stopping:
+        minNewTokens: 15
+        maxNewTokens: 15
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 15
+      text: once upon a time, there was a little girl named Alice.
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+      seed: 1178108634
+- name: Include input text
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 4
+      response:
+        inputText: true
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 4
+      text: "Once upon a time,\n\nonce upon a"
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+- name: Stop sequence 1 token
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 5
+        stopSequences:
+        - a
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 4
+      text: once upon a
+      inputTokenCount: 7
+      stopReason: STOP_SEQUENCE
+      stopSequence: a
+- name: Repetition penalty
+  request:
+    params:
+      method: GREEDY
+      decoding:
+        repetition_penalty: 2.5
+      stopping:
+        maxNewTokens: 5
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 5
+      text: once upon a time
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS
+- name: Length penalty
+  request:
+    params:
+      method: GREEDY
+      decoding:
+        repetition_penalty: 2.5
+        length_penalty:
+          start_index: 8
+          decay_factor: 1.01
+      stopping:
+        maxNewTokens: 5
+    requests:
+    - text: Once upon a time,
+  response:
+    responses:
+    - generatedTokenCount: 5
+      text: once upon a time
+      inputTokenCount: 7
+      stopReason: MAX_TOKENS

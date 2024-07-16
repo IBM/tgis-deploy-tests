@@ -1,0 +1,184 @@
+- name: Greedy max new tokens (explicit)
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 5
+    requests:
+      - text: "Once upon a time,"
+- name: Greedy include input tokens
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 4
+      response:
+        inputTokens: true
+    requests:
+      - text: "Once upon a time,"
+- name: Greedy include input tokens with logprobs
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 4
+      response:
+        inputTokens: true
+        tokenLogprobs: true
+    requests:
+      - text: "Once upon a time,"
+- name: Greedy include generated tokens
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 4
+      response:
+        generatedTokens: true
+    requests:
+      - text: "Once upon a time,"
+- name: Greedy include generated tokens with logprobs
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 4
+      response:
+        generatedTokens: true
+        tokenLogprobs: true
+    requests:
+      - text: "Once upon a time,"
+- name: Greedy multiple inputs
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 8
+    requests:
+      - text: "Once upon a time,"
+      - text: "One plus one is"
+      - text: "Somewhere,\\nover the rainbow,\\nthere is"
+- name: Greedy multiple inputs include generated tokens, logprobs, and top_n
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 8
+      response:
+        generatedTokens: true
+        tokenLogprobs: true
+        topNTokens: 2
+    requests:
+      - text: "Once upon a time,"
+      - text: "One plus one is"
+      - text: "Somewhere,\\nover the rainbow,\\nthere is"
+- name: Sample include generated tokens with logprobs, top_k=1
+  request:
+    params:
+      method: SAMPLE
+      sampling:
+        seed: 99
+        top_k: 1
+      stopping:
+        maxNewTokens: 4
+      response:
+        generatedTokens: true
+        tokenLogprobs: true
+    requests:
+      - text: "Once upon a time,"
+- name: Sample include input tokens and generated tokens with ranks and top_n, top_k < top_n
+  request:
+    params:
+      method: SAMPLE
+      sampling:
+        seed: 99
+        top_k: 1
+      stopping:
+        maxNewTokens: 4
+      response:
+        inputTokens: true
+        generatedTokens: true
+        tokenLogprobs: true
+        tokenRanks: true
+        topNTokens: 2
+    requests:
+      - text: "Once upon a time,"
+- name: Sample top_p = 0.000000001
+  request:
+    params:
+      method: SAMPLE
+      sampling:
+        seed: 99
+        top_p: 0.000000001
+      stopping:
+        maxNewTokens: 6
+    requests:
+      - text: "Once upon a time,"
+- name: Sample top_k = 10, no seed
+  skip_check: true
+  request:
+    params:
+      method: SAMPLE
+      sampling:
+        top_k: 10
+      stopping:
+        maxNewTokens: 6
+    requests:
+      - text: "Once upon a time,"
+- name: Sample top_p = 0.95, temp = 0.1, top_k = 15, minimum == maximum, no seed
+  skip_check: true
+  request:
+    params:
+      method: SAMPLE
+      sampling:
+        top_p: 0.95
+        temperature: 0.1
+        top_k: 15
+      stopping:
+        minNewTokens: 15
+        maxNewTokens: 15
+    requests:
+      - text: "Once upon a time,"
+- name: Include input text
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 4
+      response:
+        inputText: true
+    requests:
+      - text: "Once upon a time,"
+- name: Stop sequence 1 token
+  request:
+    params:
+      method: GREEDY
+      stopping:
+        maxNewTokens: 5
+        stopSequences:
+          - "a"
+    requests:
+      - text: "Once upon a time,"
+- name: Repetition penalty
+  request:
+    params:
+      method: GREEDY
+      decoding:
+        repetition_penalty: 2.5
+      stopping:
+        maxNewTokens: 5
+    requests:
+      - text: "Once upon a time,"
+- name: Length penalty
+  request:
+    params:
+      method: GREEDY
+      decoding:
+        repetition_penalty: 2.5
+        length_penalty:
+          start_index: 8
+          decay_factor: 1.01
+      stopping:
+        maxNewTokens: 5
+    requests:
+      - text: "Once upon a time,"

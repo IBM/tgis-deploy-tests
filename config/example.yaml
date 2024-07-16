@@ -1,0 +1,76 @@
+cluster:
+  api_endpoint: https://<cluster-api-endpoint>:6443
+  namespace: <NAMESPACE>
+  service_account_name: <SERVICE_ACCOUNT>
+worker:
+  image_uri: quay.io/wxpe/text-gen-server:main
+  tls_secret: tls-secret
+  ready_timeout_secs: 1800
+  scheduled_timeout_secs: 900
+  max_parallel_workers: 2
+  max_connection_retries: 10
+  ingress_hostname: <cluster-ingress-hostname>:443
+  pvcs:
+    - name: <integration-tests-pvc>
+      mount_path: /integration_tests
+      read_only: false
+    - name: <model-pvc>
+      mount_path: /shared_model_storage
+      read_only: true
+  transformers_cache_path: /shared_model_storage/transformers_cache
+  prefix_store_path: /integration_tests/prompt_prefixes
+runner:
+  ca_cert_path: tls/internal-ca.pem
+  object_store_secret: cos-secret
+  object_store_endpoint: https://s3.us-east.cloud-object-storage.appdomain.cloud
+  object_store_region: us-east-1
+  object_store_bucket: integration-tests
+  validate_models: false
+  generate_stream: true
+  save_passed_test_results: true
+  evaluation_strategy: embeddings_similarity
+tests:
+  - model: bigcode/starcoder
+    configs:
+      - deployment_framework: tgis_native
+        flash_attention: true
+        output_special_tokens: true
+    cases:
+      - tests/product/starcoder.yaml
+
+  - model: EleutherAI/gpt-neox-20b
+    configs:
+      - deployment_framework: tgis_native
+        flash_attention: true
+    cases:
+      - tests/product/gpt-neox-20b.yaml
+
+  - model: bigscience/mt0-xxl
+    configs:
+      - deployment_framework: hf_transformers
+    cases:
+      - tests/product/mt0-xxl.yaml
+
+  - model: google/flan-t5-xl
+    configs:
+      - deployment_framework: hf_transformers
+    cases:
+      - tests/product/flan-t5-xl.yaml
+
+  - model: google/flan-t5-xxl
+    configs:
+      - deployment_framework: hf_transformers
+    cases:
+      - tests/product/flan-t5-xxl.yaml
+
+  - model: google/flan-ul2
+    configs:
+      - deployment_framework: hf_transformers
+    cases:
+      - tests/product/flan-ul2.yaml
+
+  - model: TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ
+    configs:
+      - deployment_framework: hf_transformers
+    cases:
+      - tests/product/mixtral-8x7b-instruct-v0.1-gptq.yaml
